@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be My Valentine ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --yesScale: 1;
+    --noScale: 1;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #ffd6e8, #fff0f6);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Floating hearts */
+.heart {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: rgba(255,105,135,0.8);
+    transform: rotate(45deg);
+    animation: floatUp 7s linear infinite;
+}
+.heart::before,
+.heart::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: rgba(255,105,135,0.8);
+    border-radius: 50%;
+}
+.heart::before { top: -7px; left: 0; }
+.heart::after { left: -7px; top: 0; }
+
+@keyframes floatUp {
+    0% { bottom: -10%; opacity: 0; }
+    50% { opacity: 0.8; }
+    100% { bottom: 110%; opacity: 0; }
+}
+
+/* Page */
+.page {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 5;
+}
+
+/* Question */
+.question {
+    font-size: clamp(26px, 7vw, 40px);
+    font-weight: 700;
+    color: #ff3d6e;
+    margin-bottom: 8px;
+    animation: floatText 3s ease-in-out infinite;
+}
+
+@keyframes floatText {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+/* Sub text */
+.subtext {
+    font-size: 14px;
+    color: #ff6b81;
+    margin-bottom: 36px;
+    opacity: 0.85;
+}
+
+/* Buttons row */
+.buttonRow {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+/* Buttons */
+button {
+    padding: 16px 44px;
+    font-size: 18px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+}
+
+/* YES */
+#yesBtn {
+    background:
+        linear-gradient(#ff4d6d, #ff4d6d) padding-box,
+        linear-gradient(135deg, #ff9ab3, #ff4d6d, #ff9ab3) border-box;
+    border: 3px solid transparent;
+    color: white;
+    box-shadow: 0 10px 25px rgba(255,77,109,0.45);
+    transform: scale(var(--yesScale));
+    animation: pulse 2.5s infinite;
+    transition: transform 0.25s ease;
+}
+
+#yesBtn:hover {
+    transform: scale(calc(var(--yesScale) + 0.15));
+}
+
+@keyframes pulse {
+    0% { transform: scale(calc(var(--yesScale) * 0.95)); }
+    50% { transform: scale(calc(var(--yesScale) * 1.05)); }
+    100% { transform: scale(calc(var(--yesScale) * 0.95)); }
+}
+
+/* NO */
+#noBtn {
+    background: #f2f2f2;
+    color: #444;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    transform: scale(var(--noScale));
+    transition: transform 0.25s ease;
+}
+
+/* Page 2 */
+#page2 { display: none; }
+
+.bear-gif {
+    width: min(260px, 80vw);
+    border-radius: 20px;
+    animation: pop 1.3s ease-in-out infinite;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page">
+    <div class="question">Will you be my Valentine? ❤️</div>
+    <div class="subtext">I'm weak at coding, please bear with any UI issues 😉</div>
+
+    <div class="buttonRow" id="buttonRow">
+        <button id="yesBtn">Yes ❤️</button>
+        <button id="noBtn">No 😢</button>
+    </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+    <img src="/Users/kothurir/Desktop/bear-kiss-bear-kisses (1).gif" class="bear-gif">
+</div>
+
+<audio id="yesSound">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-positive-interface-beep-221.mp3">
+</audio>
+
+<script>
+/* Hearts */
+for (let i = 0; i < 35; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = (5 + Math.random() * 5) + "s";
+    h.style.animationDelay = Math.random() * 5 + "s";
+    document.body.appendChild(h);
+}
+
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const row = document.getElementById("buttonRow");
+
+/* NO hover escape */
+function moveNoAnywhere() {
+    const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+    const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+    noBtn.style.position = "absolute";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+}
+
+noBtn.addEventListener("mouseenter", moveNoAnywhere);
+noBtn.addEventListener("touchstart", e => {
+    e.preventDefault();
+    moveNoAnywhere();
+});
+
+/* YES click */
+yesBtn.onclick = e => {
+    document.getElementById("yesSound").play();
+    setTimeout(() => {
+        page1.style.display = "none";
+        page2.style.display = "flex";
+    }, 400);
+};
+
+/* Timer logic */
+let yesScale = 1;
+let noScale = 1;
+let elapsed = 0;
+
+const timer = setInterval(() => {
+    elapsed += 3;
+
+    yesScale += 0.12;
+    noScale -= 0.1;
+
+    document.documentElement.style.setProperty("--yesScale", yesScale);
+    document.documentElement.style.setProperty("--noScale", Math.max(noScale, 0.3));
+
+    if (elapsed >= 30) {
+        clearInterval(timer);
+        noBtn.remove();
+        row.style.justifyContent = "center";
+        document.documentElement.style.setProperty("--yesScale", 1.8);
+    }
+}, 3000);
+</script>
+
+</body>
+</html>
